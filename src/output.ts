@@ -1,6 +1,10 @@
 import readline from 'readline';
 
-const verbose = process.env.VERBOSE === 'true';
+let verbose = false;
+
+export function setVerbose(value: boolean) {
+  verbose = value;
+}
 
 export function message(message: string, ...args: unknown[]) {
   console.log(message, ...args);

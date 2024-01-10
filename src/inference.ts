@@ -1,6 +1,5 @@
 import OpenAI from 'openai';
 import 'dotenv/config';
-import * as output from './output';
 import type { Config } from './config';
 
 const systemMessage = {
@@ -23,7 +22,5 @@ export async function getChatCompletion(config: Config, prompt: string) {
     model: config.model,
   });
 
-  output.debug('Response object:', response);
-
-  return response.choices[0]?.message.content;
+  return [response.choices[0]?.message.content, response];
 }

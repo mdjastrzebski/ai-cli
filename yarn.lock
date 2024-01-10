@@ -3011,6 +3011,7 @@ __metadata:
     react-native-builder-bob: ^0.20.0
     release-it: ^15.0.0
     typescript: ^5.0.2
+    yargs: ^17.7.2
   bin:
     ai: lib/commonjs/bin.js
   languageName: unknown
@@ -11200,7 +11201,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.0.0, yargs@npm:^17.3.1, yargs@npm:^17.5.1":
+"yargs@npm:^17.0.0, yargs@npm:^17.3.1, yargs@npm:^17.5.1, yargs@npm:^17.7.2":
   version: 17.7.2
   resolution: "yargs@npm:17.7.2"
   dependencies:
