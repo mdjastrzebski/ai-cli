@@ -16,14 +16,16 @@ export const command: CommandModule<{}, PromptOptions> = {
   builder: (yargs) =>
     yargs
       .option('interactive', {
+        alias: 'i',
         type: 'boolean',
         default: false,
-        describe: 'Start an interactive conversation with the AI ',
+        describe: 'Start an interactive conversation',
       })
       .option('verbose', {
+        alias: 'V',
         type: 'boolean',
         default: false,
-        describe: 'Output verbose level logs',
+        describe: 'Verbose output',
       }),
   handler: (args) => run(args._.join(' '), args),
 };
