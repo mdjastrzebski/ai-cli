@@ -1,9 +1,11 @@
 import type { CommandModule } from 'yargs';
 import { parseConfig } from '../config';
 import { getChatCompletion } from '../inference';
-import * as output from '../output';
+import * as output from '../io';
 
 export interface PromptOptions {
+  interactive: boolean;
+
   /** Show verbose-level logs. */
   verbose: boolean;
 }
@@ -11,13 +13,18 @@ export interface PromptOptions {
 export const command: CommandModule<{}, PromptOptions> = {
   command: ['$0'],
   describe: 'ask the AI with prompt',
-  builder: (yargs) => {
-    return yargs.option('verbose', {
-      type: 'boolean',
-      default: false,
-      describe: 'Output verbose level logs',
-    });
-  },
+  builder: (yargs) =>
+    yargs
+      .option('interactive', {
+        type: 'boolean',
+        default: false,
+        describe: 'Start an interactive conversation with the AI ',
+      })
+      .option('verbose', {
+        type: 'boolean',
+        default: false,
+        describe: 'Output verbose level logs',
+      }),
   handler: (args) => run(args._.join(' '), args),
 };
 
@@ -27,13 +34,32 @@ export async function run(prompt: string, options: PromptOptions) {
   }
 
   const config = await parseConfig();
-  output.debug('Config:', config);
+  output.outputVerbose('Config:', config);
 
-  output.message('🧑‍💻:', prompt);
-  output.progress('💠: Thinking...');
+  if (prompt.trim()) {
+    output.outputUser(prompt);
+    output.outputAiProgress('Thinking...');
 
-  const [message, response] = await getChatCompletion(config, prompt);
-  output.clearLine();
-  output.message('💠:', message);
-  output.debug('Response:', response);
+    const [message, response] = await getChatCompletion(config, prompt);
+    output.clearLine();
+    output.outputAi(message);
+    output.outputVerbose('Response:', response);
+  } else {
+    output.outputAi('Hello, how can I help you? Press Cmd+C to exit.');
+  }
+
+  if (!options.interactive) {
+    return;
+  }
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const userPrompt = await output.inputLine('me: ');
+    output.outputAiProgress('Thinking...');
+
+    const [message, response] = await getChatCompletion(config, userPrompt);
+    output.clearLine();
+    output.outputAi(message);
+    output.outputVerbose('Response:', response);
+  }
 }

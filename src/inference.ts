@@ -22,5 +22,5 @@ export async function getChatCompletion(config: Config, prompt: string) {
     model: config.model,
   });
 
-  return [response.choices[0]?.message.content, response];
+  return [response.choices[0]?.message.content ?? null, response] as const;
 }
