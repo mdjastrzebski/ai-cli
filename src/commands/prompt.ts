@@ -2,6 +2,7 @@ import type { CommandModule } from 'yargs';
 import { parseConfig } from '../config';
 import { getChatCompletion } from '../inference';
 import * as output from '../io';
+import type { Message } from '../types';
 
 export interface PromptOptions {
   interactive: boolean;
@@ -30,22 +31,27 @@ export const command: CommandModule<{}, PromptOptions> = {
   handler: (args) => run(args._.join(' '), args),
 };
 
-export async function run(prompt: string, options: PromptOptions) {
+export async function run(initialPrompt: string, options: PromptOptions) {
   if (options.verbose) {
     output.setVerbose(true);
   }
 
   const config = await parseConfig();
-  output.outputVerbose('Config:', config);
+  output.outputVerbose(`Config: ${JSON.stringify(config, null, 2)}`);
 
-  if (prompt.trim()) {
-    output.outputUser(prompt);
+  const messages: Message[] = [];
+
+  if (initialPrompt.trim()) {
+    output.outputUser(initialPrompt);
     output.outputAiProgress('Thinking...');
 
-    const [message, response] = await getChatCompletion(config, prompt);
+    messages.push({ role: 'user', content: initialPrompt });
+    const [content, response] = await getChatCompletion(config, messages);
+
     output.clearLine();
-    output.outputAi(message);
     output.outputVerbose('Response:', response);
+    output.outputAi(content);
+    messages.push({ role: 'assistant', content: content ?? '' });
   } else {
     output.outputAi('Hello, how can I help you? Press Cmd+C to exit.');
   }
@@ -59,9 +65,11 @@ export async function run(prompt: string, options: PromptOptions) {
     const userPrompt = await output.inputLine('me: ');
     output.outputAiProgress('Thinking...');
 
-    const [message, response] = await getChatCompletion(config, userPrompt);
+    messages.push({ role: 'user', content: userPrompt });
+    const [content, response] = await getChatCompletion(config, messages);
     output.clearLine();
-    output.outputAi(message);
-    output.outputVerbose('Response:', response);
+    output.outputVerbose(`Response Object: ${JSON.stringify(response, null, 2)}`);
+    output.outputAi(content);
+    messages.push({ role: 'assistant', content: content ?? '' });
   }
 }
