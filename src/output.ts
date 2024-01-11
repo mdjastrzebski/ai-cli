@@ -30,7 +30,7 @@ export function outputVerbose(message: string, ...args: unknown[]) {
 }
 
 export function outputError(message: string, ...args: unknown[]) {
-  console.error(`ERROR:`, message, ...args);
+  console.error(chalk.red(`ERROR: ${message}`), ...args);
 }
 
 /**

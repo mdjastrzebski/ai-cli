@@ -19,8 +19,7 @@
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli lib",
     "prepare": "bob build",
-    "release": "release-it",
-    "ai": "./lib/commonjs/bin.js"
+    "release": "release-it"
   },
   "bin": {
     "ai": "lib/commonjs/bin.js"
