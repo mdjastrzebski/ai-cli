@@ -23,14 +23,6 @@ export function outputAiProgress(message: string) {
   process.stdout.write(chalk.blue('ai: ' + message));
 }
 
-/**
- * Clears current lint. To be used in conjunction with `progress`.
- */
-export function clearLine() {
-  readline.clearLine(process.stdout, 0);
-  readline.cursorTo(process.stdout, 0);
-}
-
 export function outputVerbose(message: string, ...args: unknown[]) {
   if (!verbose) return;
 
@@ -41,12 +33,10 @@ export function outputError(message: string, ...args: unknown[]) {
   console.error(`ERROR:`, message, ...args);
 }
 
-export function inputLine(prompt: string): Promise<string> {
-  return new Promise((resolve) => {
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-    rl.question(prompt, (answer) => {
-      resolve(answer);
-      rl.close();
-    });
-  });
+/**
+ * Clears current lint. To be used in conjunction with `progress`.
+ */
+export function clearLine() {
+  readline.clearLine(process.stdout, 0);
+  readline.cursorTo(process.stdout, 0);
 }

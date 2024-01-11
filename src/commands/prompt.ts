@@ -1,8 +1,8 @@
 import type { CommandModule } from 'yargs';
 import { parseConfig } from '../config';
-import { getChatCompletion } from '../inference';
-import * as output from '../io';
-import type { Message } from '../types';
+import { getChatCompletion, type Message } from '../inference';
+import { inputLine } from '../input';
+import * as output from '../output';
 
 export interface PromptOptions {
   interactive: boolean;
@@ -62,7 +62,7 @@ export async function run(initialPrompt: string, options: PromptOptions) {
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const userPrompt = await output.inputLine('me: ');
+    const userPrompt = await inputLine('me: ');
     output.outputAiProgress('Thinking...');
 
     messages.push({ role: 'user', content: userPrompt });
